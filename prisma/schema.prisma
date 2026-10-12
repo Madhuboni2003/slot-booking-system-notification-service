@@ -27,6 +27,7 @@ enum NotificationType {
   BOOKING_CONFIRMED
   FORM_SUBMITTED_SLOT_NOT_BOOKED_CHECK
   WORKR_SIGNUP_DAY0
+  VSL_ABANDONMENT
 }
 
 model Notification {

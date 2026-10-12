@@ -63,6 +63,19 @@ class NotificationRepository implements INotificationRepository {
             });
         }
 
+
+        if (data.notificationType === NotificationType.VSL_ABANDONMENT) {
+            if (data.externalRef == null) {
+                return null;
+            }
+
+            return await prisma.notification.findFirst({
+                where: {
+                    externalRef: data.externalRef,
+                    notificationType: data.notificationType
+                }
+            });
+        }
         return await prisma.notification.findFirst({
             where: {
                 submissionId: data.submissionId,
