@@ -1,16 +1,15 @@
-
 import { NotificationType } from '../../generated/prisma/enums';
 import { VslNotificationDto } from '../dto/VslNotification.dto';
 import NotificationRepository from '../repositories/Notification.repository';
 import NotificationDeliveryRepository from '../repositories/NotificationDelivery.repository';
-import { NotificationExecutorPayload } from '../types/NotificationPayload.type';
-import { NotificationChannel } from '../utils/enums/NotificationChannel.enum';
 import { getFirstName } from '../utils/helpers/name.helper';
+import { NotificationChannel } from '../utils/enums/NotificationChannel.enum';
 import { deliverToChannels } from './channelDelivery.helper';
 
 /**
- * Sends email or WhatsApp notifications for a VSL abandonment step.
- * Retries reuse the same notification record and skip channels already marked SENT.
+ * Handles email notifications for VSL abandonment steps.
+ * Uses the existing notification and delivery records to support
+ * idempotency and avoid resending emails already marked as SENT.
  */
 class VslNotificationService {
     constructor(
@@ -19,56 +18,42 @@ class VslNotificationService {
     ) {}
 
     /**
-     * Creates or reuses the notification record, then sends through the existing
-     * channel-delivery helper.
+     * Creates or reuses the notification record and delegates email
+     * delivery to the shared delivery helper.
      */
     async sendNotification(payload: VslNotificationDto): Promise<void> {
-        const notification = await this.notificationRepository.findOrCreateNotification({
-            candidateId: payload.candidateId,
-            submissionId: payload.submissionId,
-            externalRef: `vsl-run-${payload.vslRunId}-step-${payload.vslStepId}`,
-            // The existing schema has a unique key on submissionId + type + reminderNumber.
-            // Use the stable step ID so different VSL steps can have separate notification records.
-            reminderNumber: payload.vslStepId,
-            notificationType: NotificationType.VSL_ABANDONMENT
-        });
+        const notification =
+            await this.notificationRepository.findOrCreateNotification({
+                candidateId: payload.candidateId,
+                submissionId: payload.submissionId,
+
+                // A stable reference identifies this specific VSL run and step.
+                externalRef: `vsl-run-${payload.vslRunId}-${payload.stepKey}`,
+
+                // Each VSL step gets a distinct reminder number.
+                reminderNumber: payload.stepNumber,
+
+                notificationType: NotificationType.VSL_ABANDONMENT
+            });
 
         const firstName = getFirstName(payload.candidateName);
 
+        // VSL currently sends email only; template parameters are passed
+        // to the shared helper for the existing email-delivery pipeline.
         await deliverToChannels({
             notificationId: notification.id,
-            channels: payload.channels,
+            channels: [NotificationChannel.EMAIL],
             notificationDeliveryRepository: this.notificationDeliveryRepository,
-            buildExecutorPayload: (
-                channel: NotificationChannel
-            ): NotificationExecutorPayload => {
-                const templateKey = payload.templateKeys[channel] as string;
-
-                if (channel === NotificationChannel.EMAIL) {
-                    return {
-                        recipient: payload.candidateEmail,
-                        candidateName: payload.candidateName,
-                        subject: payload.subject,
-                        templateKey,
-                        emailParams: {
-                            firstName,
-                            formLink: payload.formLink
-                        }
-                    };
+            buildExecutorPayload: () => ({
+                recipient: payload.candidateEmail,
+                candidateName: payload.candidateName,
+                subject: payload.subject,
+                templateKey: payload.templateKey,
+                emailParams: {
+                    firstName,
+                    formLink: payload.formLink
                 }
-
-                return {
-                    // AiSensy expects the number with country code and without "+".
-                    recipient: payload.candidatePhone.replace(/\D/g, ''),
-                    candidateName: payload.candidateName,
-                    subject: payload.subject,
-                    templateKey,
-                    whatsAppParams: [
-                        firstName,
-                        payload.formLink
-                    ]
-                };
-            }
+            })
         });
     }
 }
