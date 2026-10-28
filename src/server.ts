@@ -8,6 +8,8 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import { setupReminderNotificationProcessor } from './processors/reminderNotification.processor';
 import { setupTransactionalNotificationProcessor } from './processors/transactionalNotification.processor';
 import { setupWorkrSignupNotificationProcessor } from './processors/workrSignupNotification.processor';
+import { setupUserInvitationNotificationProcessor } from './processors/userInvitationNotification.processor';
+
 import apiRouter from './routes';
 
 const app = express();
@@ -29,5 +31,6 @@ app.listen(serverConfig.PORT, () => {
     setupTransactionalNotificationProcessor();
     setupReminderNotificationProcessor();
     setupWorkrSignupNotificationProcessor();
+    setupUserInvitationNotificationProcessor();
     logger.info('Transactional notification processor setup completed');
 });

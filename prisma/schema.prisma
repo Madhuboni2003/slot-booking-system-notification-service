@@ -29,6 +29,7 @@ enum NotificationType {
   WORKR_SIGNUP_DAY0
   // WorkR nurture days (Day 2 .. Day 15): the day number is stored in reminder_number
   WORKR_NURTURE
+  USER_INVITATION
 }
 
 model Notification {

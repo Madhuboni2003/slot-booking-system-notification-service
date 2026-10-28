@@ -52,7 +52,10 @@ class NotificationRepository implements INotificationRepository {
         }
 
         // WorkR notifications are keyed by the WorkR user and, for the nurture days, the day number (Day 0 is reminder number 0)
-        if(isWorkrNotificationType(data.notificationType)) {
+        if (
+            isWorkrNotificationType(data.notificationType) ||
+            data.notificationType === NotificationType.USER_INVITATION
+        ) {
             if(data.externalRef == null) {
                 return null;
             }
