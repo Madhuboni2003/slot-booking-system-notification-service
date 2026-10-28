@@ -8,7 +8,9 @@ import {
     USER_INVITATION_NOTIFICATION_QUEUE,
 } from '../constants';
 import { UserInvitationNotificationDto, userInvitationNotificationSchema } from '../dtos/UserInvitationNotification.dto';
-import { EmailExecutor } from '../strategies/executors/Email.executor';
+import NotificationRepository from '../repositories/Notification.repository';
+import NotificationDeliveryRepository from '../repositories/NotificationDelivery.repository';
+import UserInvitationNotificationService from '../services/UserInvitationNotification.service';
 
 export function setupUserInvitationNotificationProcessor() {
     // Listen for invitation email jobs from User-Service.
@@ -31,19 +33,13 @@ export function setupUserInvitationNotificationProcessor() {
 
             const payload = parsed.data;
 
-            // Reuse the existing email executor and its SES/template handling.
-            const emailExecutor = new EmailExecutor();
+            const userInvitationNotificationService =
+                new UserInvitationNotificationService(
+                    new NotificationRepository(),
+                    new NotificationDeliveryRepository()
+                );
 
-            await emailExecutor.send({
-                recipient: payload.email,
-                candidateName: payload.fullName,
-                subject: "You're invited to join InterviewCall",
-                templateKey: 'UserInvitation',
-                emailParams: {
-                    fullName: payload.fullName,
-                    activationUrl: payload.activationUrl,
-                },
-            });
+            await userInvitationNotificationService.sendNotification(payload);
         },
         {
             connection: bullMqConnection,

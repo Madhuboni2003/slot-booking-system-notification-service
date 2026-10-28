@@ -41,24 +41,27 @@ class UserInvitationNotificationService {
                 if (channel === NotificationChannel.EMAIL) {
                     return {
                         recipient: payload.email,
-                        candidateName: payload.fullName,
+                        candidateName: payload.name,
                         subject: "You're invited to join InterviewCall",
                         templateKey,
                         emailParams: {
-                            fullName: payload.fullName,
-                            activationUrl: payload.activationUrl
+                            name: payload.name,
+                            email: payload.email,
+                            role: payload.role,
+                            temporaryPassword: payload.temporaryPassword,
+                            loginUrl: payload.loginUrl
                         }
                     };
                 }
 
                 return {
                     recipient: payload.candidatePhone.replace(/\D/g, ''),
-                    candidateName: payload.fullName,
+                    candidateName: payload.name,
                     subject: "You're invited to join InterviewCall",
                     templateKey,
                     whatsAppParams: [
-                        payload.fullName,
-                        payload.activationUrl
+                        payload.name,
+                        payload.role
                     ]
                 };
             }

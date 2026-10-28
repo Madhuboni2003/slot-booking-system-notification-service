@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your InterviewCall Account Invitation</title>
+  <title>Your InterviewCall Login Details</title>
 </head>
 
 <body style="margin:0; padding:0; background-color:#f4f7fb; font-family:Arial, Helvetica, sans-serif; color:#111827;">
@@ -13,7 +13,7 @@
     cellspacing="0"
     border="0"
     width="100%"
-    style="width:100%; margin:0; padding:0; background-color:#f4f7fb;"
+    style="width:100%; background-color:#f4f7fb;"
   >
     <tr>
       <td align="center" style="padding:32px 16px;">
@@ -27,23 +27,19 @@
           style="width:100%; max-width:620px; background-color:#ffffff; border:1px solid #e5e7eb; border-radius:14px;"
         >
           <tr>
-            <td style="padding:30px 30px 26px 30px;">
+            <td style="padding:30px;">
 
               <h1 style="margin:0 0 22px 0; font-size:24px; line-height:32px; font-weight:700; color:#2563eb;">
-                You're Invited to InterviewCall
+                Welcome to InterviewCall
               </h1>
 
               <p style="margin:0 0 16px 0; font-size:15px; line-height:24px; color:#111827;">
-                Hi {{fullName}},
+                Hi {{name}},
               </p>
 
-              <p style="margin:0 0 16px 0; font-size:15px; line-height:24px; color:#111827;">
-                An administrator has created an InterviewCall account for you.
-                Please set your password to activate your account and get started.
-              </p>
-
-              <p style="margin:0 0 24px 0; font-size:15px; line-height:24px; color:#111827;">
-                Click the button below to choose your password.
+              <p style="margin:0 0 22px 0; font-size:15px; line-height:24px; color:#111827;">
+                Your InterviewCall account has been created by an administrator.
+                Use the temporary password below to sign in.
               </p>
 
               <table
@@ -51,38 +47,56 @@
                 cellpadding="0"
                 cellspacing="0"
                 border="0"
-                style="margin:0 0 26px 0;"
+                width="100%"
+                style="width:100%; margin:0 0 24px 0; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;"
+              >
+                <tr>
+                  <td style="padding:20px;">
+                    <p style="margin:0 0 10px 0; font-size:13px; line-height:20px; color:#475569;">
+                      TEMPORARY PASSWORD
+                    </p>
+
+                    <p style="margin:0; font-size:17px; line-height:26px; font-weight:700; color:#111827; word-break:break-all;">
+                      {{temporaryPassword}}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 22px 0; font-size:14px; line-height:22px; color:#475569;">
+                Please keep your temporary password confidential and do not share it with anyone.
+              </p>
+
+              <table
+                role="presentation"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="margin:0 0 22px 0;"
               >
                 <tr>
                   <td align="center" bgcolor="#2563eb" style="border-radius:8px;">
                     <a
-                      href="{{activationUrl}}"
+                      href="{{loginUrl}}"
                       target="_blank"
                       style="display:inline-block; padding:14px 22px; font-size:15px; line-height:20px; font-weight:700; color:#ffffff; text-decoration:none; background-color:#2563eb; border-radius:8px;"
                     >
-                      Set Your Password
+                      Login to InterviewCall
                     </a>
                   </td>
                 </tr>
               </table>
 
               <p style="margin:0 0 8px 0; font-size:13px; line-height:20px; color:#475569;">
-                This invitation link expires in 24 hours.
-                Please set your password before it expires.
+                If the button does not work, open this link:
               </p>
 
-              <p style="margin:20px 0 2px 0; font-size:13px; line-height:20px; color:#475569;">
-                If the button does not work, copy and open this link:
-              </p>
-
-              <p style="margin:0 0 28px 0; font-size:13px; line-height:20px; color:#2563eb; word-break:break-all;">
+              <p style="margin:0 0 26px 0; font-size:13px; line-height:20px; word-break:break-all;">
                 <a
-                  href="{{activationUrl}}"
+                  href="{{loginUrl}}"
                   target="_blank"
                   style="color:#2563eb; text-decoration:underline;"
-                >
-                  {{activationUrl}}
-                </a>
+                >{{loginUrl}}</a>
               </p>
 
               <p style="margin:0; font-size:15px; line-height:24px; color:#111827;">

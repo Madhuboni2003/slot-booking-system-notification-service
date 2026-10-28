@@ -10,11 +10,15 @@ import { NotificationChannel } from '../utils/enums/NotificationChannel';
 export const userInvitationNotificationSchema = z.object({
     userId: z.number().int().positive(),
 
-    fullName: z.string().trim().min(1).max(50),
+    name: z.string().trim().min(1).max(100),
+
+    loginUrl: z.string().url(),
 
     email: z.string().trim().email(),
 
-    activationUrl: z.string().url(),
+    role: z.enum(['ADMIN', 'MANAGER']),
+
+    temporaryPassword: z.string().min(1).max(128),
 
     candidatePhone: z.string().trim().default(''),
 
